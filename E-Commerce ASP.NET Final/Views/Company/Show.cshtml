@@ -1,0 +1,128 @@
+﻿@using E_Commerce_ASP.NET_Final.Models
+@model E_Commerce_ASP.NET_Final.Models.Company
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<h2>@Model.Name</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h3 class="panel-title">Selection</h3>
+            </div>
+            <div class="panel-body">
+                <form>
+                    <h3>Order Method</h3>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                @Html.RadioButton("order", 0, (int) ViewBag.OrderType == 0)
+                            </span>
+                            <span class="form-control">Alphabetically</span>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                @Html.RadioButton("order", 1, (int) ViewBag.OrderType == 1)
+                            </span>
+                            <span class="form-control">Price Ascending</span>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                @Html.RadioButton("order", 2, (int) ViewBag.OrderType == 2)
+                            </span>
+                            <span class="form-control">Price Descending</span>
+                        </div>
+                    </div>
+
+                    <h3>Categories</h3><hr/>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                    @Html.RadioButton("cat", -1, (int) ViewBag.CategorySelect == -1)
+                                </span>
+                            <span class="form-control">All Categories</span>
+                        </div>
+                        @foreach (Category c in ViewBag.CategoryList)
+                        {
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                        @Html.RadioButton("cat", c.Id, (int) ViewBag.CategorySelect == c.Id)
+                                    </span>
+                                <span class="form-control">@c.Name</span>
+                            </div>
+                        }
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Update"/>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <h4>Products(@ViewBag.ProdcutCount)</h4>
+        <ul class="list-group">
+            @foreach (Product p in ViewBag.ProductList)
+            {
+                <a href="/Products/Show/@p.Id" class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-2">
+                            @if (File.Exists(Server.MapPath("~/Content/Images/Products/" + p.Id + ".jpg")))
+                            {
+                                <img height="72" src="/Content/Images/Products/@(p.Id).jpg"/>
+                            }
+                            else
+                            {
+                                <img height="72" src="/Content/Images/no-image.png"/>
+                            }
+
+                        </div>
+                        <div class="col-md-8">
+                            <p>@p.Name</p>
+                        </div>
+                        <div class="col-md-2">
+                            @if (p.Amount > 0)
+                            {
+                                <h3>
+                                    <span class="label label-info">$@String.Format("{0:0.00}", p.Price)</span>
+                                </h3>
+                            }
+                            else
+                            {
+                                <h3>
+                                    <span class="label label-warning">Not Left</span>
+                                </h3>
+                            }
+                        </div>
+                    </div>
+
+                </a>
+            }
+        </ul>
+        <div class="btn-group">
+            @if (ViewBag.TotalPage > 1)
+            {
+                for (int i = 1; i <= ViewBag.TotalPage; i++)
+                {
+                    if (ViewBag.Page == i)
+                    {
+                        <a class="btn btn-info" href="/Company/Show/@(Model.Id + "?page=" + i + "&com=" + ViewBag.CompanySelect + "&order=" + ViewBag.OrderType)">@i</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-default" href="/Company/Show/@(Model.Id + "?page=" + i + "&com=" + ViewBag.CompanySelect + "&order=" + ViewBag.OrderType)">@i</a>
+                    }
+                }
+            }
+        </div>
+    </div>
+
+</div>
+<p>
+    @Html.ActionLink("Back to main page", "Index", "Home")
+</p>

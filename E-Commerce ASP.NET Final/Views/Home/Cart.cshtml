@@ -1,0 +1,78 @@
+﻿@using E_Commerce_ASP.NET_Final.Models
+
+@{
+    ViewBag.Title = "Cart";
+
+    int[][] cart = ViewBag.Cart;
+
+    var db = new ProductModel();
+
+    Product[] productArr = new Product[] {};
+
+    double TotalAmount = 0;
+
+    if (cart != null)
+    {
+        productArr = new Product[cart.Length];
+
+        for (int i = 0; i < cart.Length; i++)
+        {
+            productArr[i] = db.Product.Find(cart[i][0]);
+
+            TotalAmount += productArr[i].Price*cart[i][1];
+        }
+    }
+
+}
+
+<h2>Cart</h2>
+
+@if (cart != null)
+{
+    <ul class="list-group">
+        @for (int i = 0; i < cart.Length; i++)
+        {
+            Product p = productArr[i];
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-md-2">
+                        @if (File.Exists(Server.MapPath("~/Content/Images/Products/" + p.Id + ".jpg")))
+                        {
+                            <img height="72" src="/Content/Images/Products/@(p.Id).jpg" />
+                        }
+                        else
+                        {
+                            <img height="72" src="/Content/Images/no-image.png" />
+                        }
+
+                    </div>
+                    <div class="col-md-8">
+                        <a href="/Products/Show/@p.Id">@p.Name</a>
+                    </div>
+                    <div class="col-md-2">
+                        <h3>
+                            <span>$@String.Format("{0:0.00}", p.Price) x @(cart[i][1])</span>
+                        </h3>
+                        <a class="btn btn-warning" href="/Home/RemoveFromCart?id=@p.Id">Remove</a>
+                    </div>
+                </div>
+
+            </li>
+        }
+    </ul>
+
+    <hr />
+
+    <h3>TotalAmount: $@String.Format("{0:0.00}", TotalAmount)</h3>
+
+    <hr/>
+
+    <a class="btn btn-success" href="/Home/Order">Continue Order</a>
+}
+else
+{
+    <h2>There is nothing in your cart!</h2>
+}
+
+
+

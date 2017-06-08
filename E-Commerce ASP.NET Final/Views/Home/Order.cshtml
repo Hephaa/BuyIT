@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Order";
+}
+
+<h2>Order</h2>
+
+@using (Html.BeginForm("CompleteOrder", "Home", FormMethod.Post))
+{
+
+    <input class="form-control" type="text" name="email" placeholder="Email"/>
+    <br/>
+    <input class="form-control" type="text" name="number" placeholder="Phone Number"/>
+    <br />
+    <textarea class="form-control" name="adress" placeholder="Adress"></textarea>
+    <br />
+
+    <input type="submit" value="Complete Order" class="btn btn-success"/>
+}
+
+
+

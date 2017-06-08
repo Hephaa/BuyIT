@@ -1,0 +1,71 @@
+﻿@using E_Commerce_ASP.NET_Final.Models
+@model E_Commerce_ASP.NET_Final.Models.Order
+@{
+    ViewBag.Title = "Order";
+
+    int[][] orders = Helpers.StringToCartArray(Model.Products);
+
+    Product[] productArr = new Product[orders.Length];
+
+    var productDb = new ProductModel();
+
+    double totalAmount = 0;
+
+    for (int i = 0; i < orders.Length; i++)
+    {
+        productArr[i] = productDb.Product.Find(orders[i][0]);
+        totalAmount += productArr[i].Price*orders[i][1];
+    }
+}
+
+<h2>Order: @Model.Id</h2>
+<hr/>
+
+<dl class="dl-horizontal">
+    <dt>
+        Date:
+    </dt>
+
+    <dd>
+        @Model.Date
+    </dd>
+    <dt>
+        Products:
+    </dt>
+    <dd>
+        @for (int i = 0; i < orders.Length; i++)
+        {
+            Product p = productArr[i];
+            <span>@(p.Name + "  ||  Amount:" + orders[i][1])</span>
+            <br/>
+        }
+    </dd>
+    <dt>
+        Email:
+    </dt>
+    <dd>
+        @Model.Email
+    </dd>
+    <dt>
+        Phone Number:
+    </dt>
+    <dd>
+        @Model.PhoneNumber
+    </dd>
+    <dt>
+        Adress:
+    </dt>
+    <dd>
+        @Model.Adress
+    </dd>
+    
+    <dt>
+        Total Amount: 
+    </dt>
+    <dd>
+        @totalAmount
+    </dd>
+</dl>
+
+@Html.ActionLink("Back to  Admin Panel", "Index", "Admin")
+

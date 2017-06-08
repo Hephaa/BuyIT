@@ -1,0 +1,73 @@
+﻿@using E_Commerce_ASP.NET_Final.Models
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <h4>Categories</h4>
+        <ul class="list-group"></ul>
+        @foreach (Category c in ViewBag.CategoryList)
+        {
+            <li class="list-group-item"><a href="/Category/Show/@c.Id">@c.Name</a></li>
+        }
+    </div>
+    <div class="col-md-9">
+        <h4>Products</h4>
+        <ul class="list-group">
+            @foreach (Product p in ViewBag.ProductList)
+            {
+                <a href="/Products/Show/@p.Id" class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-2">
+                            @if (File.Exists(Server.MapPath("~/Content/Images/Products/" + p.Id + ".jpg")))
+                            {
+                                <img height="72" src="/Content/Images/Products/@(p.Id).jpg" />
+                            }
+                            else
+                            {
+                                <img height="72" src="/Content/Images/no-image.png" />
+                            }
+
+                        </div>
+                        <div class="col-md-8">
+                            <p>@p.Name</p>
+                        </div>
+                        <div class="col-md-2">
+                            @if (p.Amount > 0)
+                            {
+                                <h3>
+                                    <span class="label label-info">$@String.Format("{0:0.00}", p.Price)</span>
+                                </h3>
+                            }
+                            else
+                            {
+                                <h3>
+                                    <span class="label label-warning">Not Left</span>
+                                </h3>
+                            }
+                        </div>
+                    </div>
+
+                </a>
+            }
+        </ul>
+        <div class="btn-group">
+            @if (ViewBag.TotalPage > 1)
+            {
+                for (int i = 1; i <= ViewBag.TotalPage; i++)
+                {
+                    if (ViewBag.Page == i)
+                    {
+                        <a class="btn btn-info" href="/@("?page=" + i)">@i</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-default" href="/@("?page=" + i)">@i</a>
+                    }
+                }
+            }
+        </div>
+    </div>
+    
+</div>

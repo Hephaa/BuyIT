@@ -1,0 +1,79 @@
+﻿@using E_Commerce_ASP.NET_Final.Models
+@{
+    ViewBag.Title = "Admin Panel";
+
+    var categoryDb = new CategoryModel();
+    ViewBag.CategoryList = categoryDb.Category.ToList();
+
+    var companyDb = new CompanyModel();
+    ViewBag.CompanyList = companyDb.Company.ToList();
+
+    var orderDb = new OrderModel();
+    List<Order> orderList = orderDb.Order.ToList();
+    ViewBag.OrderList = orderList.OrderByDescending(o => o.Date);
+@helper RenderCategories(int parentId, int level)
+{
+    var categoryDb = new CategoryModel();
+    var catList = categoryDb.Category.Where(x => x.ParentId == parentId).ToList();
+
+    if (catList.Count == 0)
+    {
+        return;
+    }
+
+    foreach (var c in catList)
+    {
+        <li class="list-group-item" style="margin-left: @(level*20)px;">
+            <a href="/Category/Show/@c.Id">@c.Name</a>
+            <div class="btn-group btn-group-xs pull-right">
+                <a class="btn btn-default" href="/Products/Create?category=@c.Id">New</a>
+                <a class="btn btn-default" href="/Category/Edit/@c.Id">Edit</a>
+            </div>
+        </li>
+        @RenderCategories(c.Id, level + 1)
+        ;
+    }
+}}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Categories</h3>
+            <br/>
+            <a class="btn btn-primary" href="/Category/Create">New Category</a>
+            <hr/>
+            <ul class="list-group">
+                @RenderCategories(-1, 0)
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h3>Companies</h3>
+            <br/>
+            <a class="btn btn-primary" href="/Company/Create">New Company</a>
+            <hr/>
+            <ul class="list-group">
+                @foreach (Company co in ViewBag.CompanyList)
+                {
+                    <li class="list-group-item">
+                        <a href="/Company/Show/@co.Id">@co.Name</a>
+                        <div class="btn-group btn-group-xs pull-right">
+                            <a class="btn btn-default" href="/Company/Edit/@co.Id">Edit</a>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h3>Orders</h3>
+            <hr/>
+            <ul class="list-group">
+                @foreach (Order order in ViewBag.OrderList)
+                {
+                    <li class="list-group-item">
+                        <a href="/Admin/Order/@order.Id">Order Id: @order.Id - @order.Date</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

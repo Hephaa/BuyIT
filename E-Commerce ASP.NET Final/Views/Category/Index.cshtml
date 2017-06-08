@@ -1,0 +1,38 @@
+﻿@using E_Commerce_ASP.NET_Final.Models
+@model IEnumerable<E_Commerce_ASP.NET_Final.Models.Category>
+
+@{
+    ViewBag.Title = "Categories";
+
+    List<Category> mainList = Model.Where(x => x.ParentId == -1).ToList();
+}
+
+@helper RenderCategories(int parentId, int level)
+{
+    var categoryDb = new CategoryModel();
+    var catList = categoryDb.Category.Where(x => x.ParentId == parentId).ToList();
+
+    if (catList.Count == 0)
+    {
+        return;
+    }
+
+    foreach (var c in catList)
+    {
+        <a class="list-group-item" href="/Category/Show/@c.Id" style="margin-left: @(level*20)px;">@c.Name</a>
+        @RenderCategories(c.Id, level + 1)
+    }
+}
+
+<h2>Categories</h2>
+<hr/>
+
+<div class="container">
+    <ul class="list-group">
+        @foreach (Category c in mainList)
+        {
+            <a class="list-group-item" href="/Category/Show/@c.Id">@c.Name</a>
+            @RenderCategories(c.Id, 1);
+        }
+    </ul>
+</div>
